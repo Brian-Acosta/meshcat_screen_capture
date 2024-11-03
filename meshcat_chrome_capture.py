@@ -44,7 +44,7 @@ class MeshcatChromeCapture:
         self._meshcat.SetProperty("/Lights/SpotLight/<object>", "intensity", 40.0)
 
     def _remove_meshcat_panels(self):
-        assert(self._driver.current_url == self._meshcat.web_url())
+        assert (self._driver.current_url.strip('/') == self._meshcat.web_url().strip('/'))
         wait = WebDriverWait(self._driver, 10)
         _ = wait.until(EC.presence_of_element_located((By.ID, "stats-plot")))
 
