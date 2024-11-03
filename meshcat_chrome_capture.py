@@ -60,7 +60,7 @@ class MeshcatChromeCapture:
         # The control panel is made with Dat.GUI (https://sbcode.net/threejs/dat-gui/),
         # so I asked an LLM for a script to hide Dat.GUI elements
         #
-        # Maybe need updated for future meshcat versions
+        # May need updated for future meshcat versions
         self._driver.execute_script("""
             var datGuis = document.getElementsByClassName('dg main');
             while(datGuis.length > 0) {
@@ -88,19 +88,22 @@ class MeshcatChromeCapture:
 
     def look_at(self, point_of_interest, cam_pos_local):
         # point the camera at the poit of interest
-        self._meshcat.SetCameraPose(
-            point_of_interest + cam_pos_local, point_of_interest)
+        self._meshcat.SetCameraPose(point_of_interest + cam_pos_local, point_of_interest)
+
+        spotlight_pos = np.array([0.0, -5.0, 1.0])
+        point_light_pos_negative = np.array([2.0, 0.0, 2.0])
+        point_light_pos_positive = np.array([-2.0, 0.0, 2.0])
 
         # Set the lighting positions
         self._meshcat.SetTransform(
             "/Lights/SpotLight/<object>",
-            RigidTransform(
-                RotationMatrix(), point_of_interest + np.array([0.0, -5.0, 1.0])))
+            RigidTransform(RotationMatrix(), point_of_interest + spotlight_pos)
+        )
         self._meshcat.SetTransform(
             "/Lights/PointLightPositiveX/<object>",
-            RigidTransform(
-                RotationMatrix(), point_of_interest + np.array([2.0, 0.0, 2.0])))
+            RigidTransform(RotationMatrix(), point_of_interest + point_light_pos_positive)
+        )
         self._meshcat.SetTransform(
             "/Lights/PointLightNegativeX/<object>",
-            RigidTransform(
-                RotationMatrix(), point_of_interest + np.array([-2.0, 0.0, 2.0])))
+            RigidTransform(RotationMatrix(), point_of_interest + point_light_pos_negative)
+        )
